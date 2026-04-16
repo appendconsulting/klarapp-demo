@@ -18,41 +18,6 @@ body {
   padding: 20px 0 40px;
 }
 
-/* Controls bar */
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-.controls button {
-  padding: 8px 18px;
-  border: none;
-  border-radius: 20px;
-  font-size: 14px;
-  cursor: pointer;
-  font-weight: 600;
-}
-.btn-skip { background: #2C5F8A; color: #fff; }
-.btn-restart { background: #fff; color: #2C5F8A; border: 2px solid #2C5F8A; }
-.btn-skip:hover { background: #1e4466; }
-.btn-restart:hover { background: #f0f4f8; }
-
-/* Progress dots */
-.progress-dots {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 18px;
-}
-.dot {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: #b0bec5;
-  transition: background 0.3s;
-}
-.dot.active { background: #2C5F8A; }
-.dot.done { background: #27ae60; }
-
 /* Phone frame */
 .phone {
   width: 375px;
@@ -98,15 +63,14 @@ body {
   padding: 16px;
 }
 
-/* Artifacts */
-.artifact {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
-}
-.artifact.show {
-  opacity: 1;
-  transform: translateY(0);
+/* Pages */
+.page { display: none; }
+.page.active { display: block; }
+
+/* Section title */
+.scene-title {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+  color: #9ca3af; text-transform: uppercase; margin-bottom: 12px;
 }
 
 /* Module cards */
@@ -121,19 +85,30 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   cursor: pointer;
   border: 2px solid transparent;
-  transition: border-color 0.3s, box-shadow 0.3s, transform 0.15s;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
 }
+.module-card:hover { transform: scale(1.01); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 .module-card.selected {
   border-color: #2C5F8A;
   box-shadow: 0 4px 16px rgba(44,95,138,0.2);
-  transform: scale(1.02);
 }
 .module-icon { font-size: 32px; }
 .module-title { font-size: 16px; font-weight: 700; color: #1a2a3a; }
 .module-desc { font-size: 13px; color: #6b7280; margin-top: 2px; }
 
+.cta-btn {
+  width: 100%; padding: 14px; background: #2C5F8A; color: #fff;
+  border: none; border-radius: 14px; font-size: 16px; font-weight: 700;
+  cursor: pointer; margin-top: 8px; transition: background 0.2s;
+}
+.cta-btn:hover { background: #1e4466; }
+.cta-btn:disabled { background: #b0bec5; cursor: default; }
+
 /* Diary */
-.diary-section { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+.diary-section {
+  background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
 .diary-label { font-size: 14px; font-weight: 600; color: #1a2a3a; margin-bottom: 10px; }
 .btn-row { display: flex; gap: 10px; }
 .btn-yesno {
@@ -141,10 +116,11 @@ body {
   border-radius: 12px; font-size: 15px; font-weight: 600;
   background: #fff; cursor: pointer; transition: all 0.2s;
 }
-.btn-yesno.selected-no { background: #27ae60; color: #fff; border-color: #27ae60; }
-.btn-yesno.selected-yes { background: #ef4444; color: #fff; border-color: #ef4444; }
+.btn-yesno:hover { border-color: #2C5F8A; }
+.btn-yesno.sel-no { background: #27ae60; color: #fff; border-color: #27ae60; }
+.btn-yesno.sel-yes { background: #ef4444; color: #fff; border-color: #ef4444; }
 
-.craving-scale { display: flex; gap: 8px; margin-top: 4px; }
+.craving-scale { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
 .craving-dot {
   width: 36px; height: 36px; border-radius: 50%;
   background: #f0f4f8; border: 2px solid #e5e7eb;
@@ -152,21 +128,17 @@ body {
   font-size: 14px; font-weight: 700; color: #6b7280; cursor: pointer;
   transition: all 0.2s;
 }
+.craving-dot:hover { border-color: #e67e22; }
 .craving-dot.selected { background: #e67e22; color: #fff; border-color: #e67e22; }
 
 .fak-input {
   width: 100%; background: #f9fafb; border: 1.5px solid #e5e7eb;
   border-radius: 10px; padding: 10px 12px; font-size: 13px;
-  color: #374151; margin-top: 4px; min-height: 44px;
+  color: #374151; margin-top: 4px; min-height: 60px;
   resize: none; font-family: inherit;
+  transition: border-color 0.2s;
 }
-
-.save-btn {
-  width: 100%; padding: 14px; background: #2C5F8A; color: #fff;
-  border: none; border-radius: 14px; font-size: 16px; font-weight: 700;
-  cursor: pointer; margin-top: 8px; transition: background 0.2s;
-}
-.save-btn:hover { background: #1e4466; }
+.fak-input:focus { outline: none; border-color: #2C5F8A; background: #fff; }
 
 /* Points popup */
 .points-popup {
@@ -180,14 +152,18 @@ body {
   box-shadow: 0 16px 48px rgba(0,0,0,0.18);
   z-index: 100;
   transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
 }
 .points-popup.show { transform: translate(-50%, -50%) scale(1); }
-.points-popup .points-emoji { font-size: 48px; }
-.points-popup .points-text { font-size: 26px; font-weight: 800; color: #27ae60; margin-top: 8px; }
-.points-popup .points-sub { font-size: 14px; color: #6b7280; margin-top: 4px; }
+.points-emoji { font-size: 48px; }
+.points-text { font-size: 26px; font-weight: 800; color: #27ae60; margin-top: 8px; }
+.points-sub { font-size: 14px; color: #6b7280; margin-top: 4px; }
 
-/* Chart screen */
-.chart-card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+/* Progress / chart */
+.chart-card {
+  background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
 .chart-title { font-size: 15px; font-weight: 700; color: #1a2a3a; margin-bottom: 12px; }
 .badge-pill {
   display: inline-flex; align-items: center; gap: 6px;
@@ -197,8 +173,8 @@ body {
   margin-bottom: 12px;
 }
 .theme-card { background: #e8f4fd; border-radius: 14px; padding: 14px; margin-top: 8px; }
-.theme-card .theme-title { font-size: 14px; font-weight: 700; color: #1a5276; }
-.theme-card .theme-body { font-size: 13px; color: #2c5f8a; margin-top: 6px; line-height: 1.5; }
+.theme-title { font-size: 14px; font-weight: 700; color: #1a5276; }
+.theme-body { font-size: 13px; color: #2c5f8a; margin-top: 6px; line-height: 1.5; }
 
 /* Calendar */
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 10px; }
@@ -208,10 +184,19 @@ body {
   width: 32px; height: 32px; border-radius: 50%;
   background: #f0f4f8; margin: 4px auto 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  font-size: 16px; cursor: pointer; transition: background 0.2s;
 }
+.cal-day .day-icon:hover { background: #dde6ef; }
 .cal-day .day-icon.done { background: #d4edda; }
 .cal-day .day-icon.today { background: #e8f4fd; border: 2px solid #2C5F8A; }
+
+/* Crisis button */
+.crisis-btn {
+  width: 100%; padding: 14px; background: #ef4444; color: #fff;
+  border: none; border-radius: 14px; font-size: 16px; font-weight: 700;
+  cursor: pointer; margin-top: 8px; transition: background 0.2s;
+}
+.crisis-btn:hover { background: #dc2626; }
 
 /* Crisis modal */
 .crisis-overlay {
@@ -220,9 +205,10 @@ body {
   display: flex; align-items: flex-end;
   z-index: 200;
   opacity: 0;
+  pointer-events: none;
   transition: opacity 0.3s;
 }
-.crisis-overlay.show { opacity: 1; }
+.crisis-overlay.show { opacity: 1; pointer-events: all; }
 .crisis-modal {
   background: #fff; border-radius: 24px 24px 0 0;
   padding: 24px 20px 32px;
@@ -232,26 +218,22 @@ body {
 }
 .crisis-overlay.show .crisis-modal { transform: translateY(0); }
 .crisis-modal h2 { font-size: 20px; font-weight: 800; color: #1a2a3a; }
-.crisis-modal .crisis-sub { font-size: 14px; color: #6b7280; margin-top: 4px; margin-bottom: 16px; }
+.crisis-sub { font-size: 14px; color: #6b7280; margin-top: 4px; margin-bottom: 16px; }
 .crisis-tip {
   display: flex; align-items: center; gap: 12px;
   background: #f0f4f8; border-radius: 12px; padding: 12px 14px;
   margin-bottom: 10px;
-  opacity: 0; transform: translateX(-10px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
 }
-.crisis-tip.show { opacity: 1; transform: translateX(0); }
-.crisis-tip .tip-icon { font-size: 24px; flex-shrink: 0; }
-.crisis-tip .tip-text { font-size: 14px; font-weight: 600; color: #1a2a3a; }
-.crisis-final { font-size: 15px; font-weight: 700; color: #27ae60; text-align: center; margin-top: 14px; opacity: 0; transition: opacity 0.5s; }
-.crisis-final.show { opacity: 1; }
+.tip-icon { font-size: 24px; flex-shrink: 0; }
+.tip-text { font-size: 14px; font-weight: 600; color: #1a2a3a; }
+.crisis-final { font-size: 15px; font-weight: 700; color: #27ae60; text-align: center; margin-top: 14px; }
 .rusinfo { font-size: 16px; font-weight: 800; color: #2C5F8A; }
-
-/* Scene title */
-.scene-title {
-  font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
-  color: #9ca3af; text-transform: uppercase; margin-bottom: 8px;
+.close-btn {
+  width: 100%; padding: 12px; background: #f0f4f8; color: #374151;
+  border: none; border-radius: 14px; font-size: 15px; font-weight: 600;
+  cursor: pointer; margin-top: 12px; transition: background 0.2s;
 }
+.close-btn:hover { background: #dde6ef; }
 
 /* Bottom nav */
 .bottom-nav {
@@ -261,24 +243,21 @@ body {
 .nav-item {
   flex: 1; display: flex; flex-direction: column; align-items: center;
   gap: 2px; font-size: 10px; font-weight: 600; color: #9ca3af;
+  cursor: pointer; transition: color 0.2s; padding: 4px 0;
 }
+.nav-item:hover { color: #2C5F8A; }
 .nav-item.active { color: #2C5F8A; }
-.nav-item .nav-icon { font-size: 22px; }
+.nav-icon { font-size: 22px; }
+
+/* Info banner */
+.info-banner {
+  background: #e8f4fd; border-radius: 12px; padding: 10px 14px;
+  font-size: 13px; color: #1a5276; margin-bottom: 12px;
+  border-left: 3px solid #2C5F8A;
+}
 </style>
 </head>
 <body>
-
-<div class="controls">
-  <button class="btn-restart" onclick="restart()">↺ Start på nytt</button>
-  <button class="btn-skip" onclick="skip()">Hopp over →</button>
-</div>
-
-<div class="progress-dots" id="dots">
-  <div class="dot" id="dot0"></div>
-  <div class="dot" id="dot1"></div>
-  <div class="dot" id="dot2"></div>
-  <div class="dot" id="dot3"></div>
-</div>
 
 <div class="phone" id="phone">
   <div class="statusbar">
@@ -293,349 +272,286 @@ body {
     <h1>KlarApp</h1>
     <p>Selvhjelpsverktøy for kokainbruk</p>
   </div>
-  <div class="screen" id="screen"></div>
+
+  <div class="screen" id="screen">
+
+    <!-- PAGE: HJEM -->
+    <div class="page active" id="page-hjem">
+      <div class="scene-title">Velg din modul</div>
+      <div class="module-card" id="mod0" onclick="selectModule(0)">
+        <div class="module-icon">🎯</div>
+        <div>
+          <div class="module-title">Kutt ut</div>
+          <div class="module-desc">Mål om total avholdenhet</div>
+        </div>
+      </div>
+      <div class="module-card selected" id="mod1" onclick="selectModule(1)">
+        <div class="module-icon">⚖️</div>
+        <div>
+          <div class="module-title">Kontroll</div>
+          <div class="module-desc">Reduser og bli mer bevisst</div>
+        </div>
+      </div>
+      <div class="module-card" id="mod2" onclick="selectModule(2)">
+        <div class="module-icon">🔗</div>
+        <div>
+          <div class="module-title">Kombikutt</div>
+          <div class="module-desc">Kokain + alkohol i sosiale settinger</div>
+        </div>
+      </div>
+      <div class="info-banner">
+        💡 Du er på dag <strong>14</strong> i <strong>Kontroll</strong>-modulen. Bra jobba!
+      </div>
+      <button class="cta-btn" onclick="goTo('dagbok')">📓 Registrer dagen</button>
+    </div>
+
+    <!-- PAGE: DAGBOK -->
+    <div class="page" id="page-dagbok">
+      <div class="diary-section">
+        <div class="diary-label">Brukte du kokain i dag?</div>
+        <div class="btn-row">
+          <button class="btn-yesno" id="btnYes" onclick="selectUse('yes')">Ja</button>
+          <button class="btn-yesno sel-no" id="btnNo" onclick="selectUse('no')">Nei</button>
+        </div>
+      </div>
+
+      <div class="diary-section">
+        <div class="diary-label">Sug / craving i dag?</div>
+        <div class="craving-scale">
+          <div class="craving-dot" onclick="selectCraving(1)">1</div>
+          <div class="craving-dot selected" id="cr2" onclick="selectCraving(2)">2</div>
+          <div class="craving-dot" onclick="selectCraving(3)">3</div>
+          <div class="craving-dot" onclick="selectCraving(4)">4</div>
+          <div class="craving-dot" onclick="selectCraving(5)">5</div>
+        </div>
+      </div>
+
+      <div class="diary-section">
+        <div class="diary-label">FAK – Hva skjedde?</div>
+        <div style="font-size:12px;color:#9ca3af;margin-bottom:4px">Følelse / situasjon</div>
+        <textarea class="fak-input" id="fakF" placeholder="Skriv om følelsen eller situasjonen..."></textarea>
+        <div style="font-size:12px;color:#9ca3af;margin:8px 0 4px">Automatisk tanke</div>
+        <textarea class="fak-input" id="fakT" placeholder="Hva tenkte du automatisk?"></textarea>
+        <div style="font-size:12px;color:#9ca3af;margin:8px 0 4px">Konsekvens / hva skjedde etterpå?</div>
+        <textarea class="fak-input" id="fakK" placeholder="Hva ble konsekvensen?"></textarea>
+      </div>
+
+      <button class="cta-btn" onclick="saveDiary()">💾 Lagre dagen</button>
+    </div>
+
+    <!-- PAGE: FREMGANG -->
+    <div class="page" id="page-fremgang">
+      <div class="chart-card">
+        <div class="chart-title">Dager uten bruk – siste 14 dager</div>
+        <div style="position:relative;height:180px;"><canvas id="progressChart"></canvas></div>
+      </div>
+      <div class="badge-pill">🏆 14 dager! Fantastisk innsats!</div>
+      <div class="chart-card">
+        <div class="chart-title">📚 Dagens tema</div>
+        <div class="theme-card">
+          <div class="theme-title">Dag 14 – Hjernens belønningssystem</div>
+          <div class="theme-body">Dopamin-nivåene normaliserer seg gradvis etter kokainbruk. Etter to uker begynner hjernen å gjenopprette naturlig belønningsfølelse. Du er på rett vei.</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">📊 Denne uken</div>
+        <div class="cal-grid" id="weekCal"></div>
+      </div>
+    </div>
+
+    <!-- PAGE: HJELP -->
+    <div class="page" id="page-hjelp">
+      <div class="diary-section">
+        <div class="diary-label">🎯 Mål denne uken</div>
+        <div style="font-size:15px;font-weight:600;color:#2C5F8A;padding:8px 0">Ikke bruke kokain på lørdag</div>
+        <div style="font-size:13px;color:#6b7280;margin-top:4px">Satt mandag 14. april</div>
+      </div>
+      <div class="diary-section">
+        <div class="diary-label">📞 Støtteressurser</div>
+        <div class="crisis-tip" style="opacity:1;transform:none;">
+          <span class="tip-icon">📞</span>
+          <span class="tip-text"><strong>RUSinfo: 08588</strong><br><span style="font-size:12px;color:#6b7280">Gratis rådgivning, alle dager</span></span>
+        </div>
+        <div class="crisis-tip" style="opacity:1;transform:none;">
+          <span class="tip-icon">💬</span>
+          <span class="tip-text"><strong>Chat med rådgiver</strong><br><span style="font-size:12px;color:#6b7280">rustelefonen.no</span></span>
+        </div>
+        <div class="crisis-tip" style="opacity:1;transform:none;">
+          <span class="tip-icon">🏥</span>
+          <span class="tip-text"><strong>Finn behandlingsplass</strong><br><span style="font-size:12px;color:#6b7280">helsenorge.no</span></span>
+        </div>
+      </div>
+      <button class="crisis-btn" onclick="showCrisis()">🚨 Jeg har lyst akkurat nå</button>
+    </div>
+
+  </div><!-- /screen -->
+
+  <!-- Crisis overlay (global) -->
+  <div class="crisis-overlay" id="crisisOverlay">
+    <div class="crisis-modal">
+      <h2>🚨 Har du lyst nå?</h2>
+      <div class="crisis-sub">Her er tre ting du kan gjøre akkurat nå:</div>
+      <div class="crisis-tip">
+        <span class="tip-icon">📞</span>
+        <span class="tip-text">Ring en venn du stoler på</span>
+      </div>
+      <div class="crisis-tip">
+        <span class="tip-icon">🚶</span>
+        <span class="tip-text">Gå en kort tur – frisk luft hjelper</span>
+      </div>
+      <div class="crisis-tip">
+        <span class="tip-icon">📓</span>
+        <span class="tip-text">Åpne appen og les dagboken din</span>
+      </div>
+      <div class="crisis-final">Du klarer dette. <span class="rusinfo">RUSinfo: 08588</span></div>
+      <button class="close-btn" onclick="hideCrisis()">Lukk</button>
+    </div>
+  </div>
+
+  <!-- Points popup -->
+  <div class="points-popup" id="pointsPopup">
+    <div class="points-emoji">🎉</div>
+    <div class="points-text">+10 poeng!</div>
+    <div class="points-sub">Dagen er registrert. Bra jobba!</div>
+  </div>
+
   <div class="bottom-nav">
-    <div class="nav-item active"><span class="nav-icon">🏠</span>Hjem</div>
-    <div class="nav-item"><span class="nav-icon">📓</span>Dagbok</div>
-    <div class="nav-item"><span class="nav-icon">📊</span>Fremgang</div>
-    <div class="nav-item"><span class="nav-icon">🛟</span>Hjelp</div>
+    <div class="nav-item active" id="nav-hjem" onclick="goTo('hjem')">
+      <span class="nav-icon">🏠</span>Hjem
+    </div>
+    <div class="nav-item" id="nav-dagbok" onclick="goTo('dagbok')">
+      <span class="nav-icon">📓</span>Dagbok
+    </div>
+    <div class="nav-item" id="nav-fremgang" onclick="goTo('fremgang')">
+      <span class="nav-icon">📊</span>Fremgang
+    </div>
+    <div class="nav-item" id="nav-hjelp" onclick="goTo('hjelp')">
+      <span class="nav-icon">🛟</span>Hjelp
+    </div>
   </div>
 </div>
 
 <script>
-let skipFlag = false;
 let activeChart = null;
-let currentScene = 0;
-const totalScenes = 4;
+let currentPage = 'hjem';
+let selectedModule = 1;
 
-function delay(ms) {
-  return new Promise(res => {
-    if (skipFlag) return res();
-    const t = setTimeout(res, ms);
-    const poll = setInterval(() => {
-      if (skipFlag) { clearTimeout(t); clearInterval(poll); res(); }
-    }, 50);
+const headers = {
+  hjem:     ['KlarApp', 'Selvhjelpsverktøy for kokainbruk'],
+  dagbok:   ['Dagbok', 'Registrer i dag'],
+  fremgang: ['Fremgang', 'Siste 14 dager'],
+  hjelp:    ['Hjelp & Krisekort', 'Du er ikke alene'],
+};
+
+function goTo(page) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  // Show target
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+
+  // Update header
+  const [title, sub] = headers[page];
+  document.getElementById('appheader').innerHTML =
+    '<h1>' + title + '</h1><p>' + sub + '</p>';
+
+  currentPage = page;
+
+  // Init chart when navigating to fremgang
+  if (page === 'fremgang') initChart();
+
+  // Scroll to top
+  document.getElementById('screen').scrollTop = 0;
+}
+
+function selectModule(idx) {
+  selectedModule = idx;
+  document.querySelectorAll('.module-card').forEach((c, i) => {
+    c.classList.toggle('selected', i === idx);
   });
 }
 
-function setDots(active) {
-  for (let i = 0; i < totalScenes; i++) {
-    const d = document.getElementById('dot' + i);
-    d.className = 'dot';
-    if (i < active) d.classList.add('done');
-    else if (i === active) d.classList.add('active');
-  }
+function selectUse(val) {
+  document.getElementById('btnYes').className = 'btn-yesno' + (val === 'yes' ? ' sel-yes' : '');
+  document.getElementById('btnNo').className  = 'btn-yesno' + (val === 'no'  ? ' sel-no'  : '');
 }
 
-function setHeader(title, sub) {
-  document.getElementById('appheader').innerHTML =
-    '<h1>' + title + '</h1><p>' + sub + '</p>';
+function selectCraving(n) {
+  document.querySelectorAll('.craving-dot').forEach((d, i) => {
+    d.classList.toggle('selected', i + 1 === n);
+  });
 }
 
-async function reveal(el, extraDelay = 0) {
-  await delay(extraDelay);
-  el.classList.add('show');
-}
-
-function clearScreen() {
-  const s = document.getElementById('screen');
-  s.innerHTML = '';
-  if (activeChart) { try { activeChart.destroy(); } catch(e){} activeChart = null; }
-}
-
-// ── SCENE 1 ─────────────────────────────────────────────────────────────────
-async function scene1() {
-  skipFlag = false;
-  currentScene = 0;
-  setDots(0);
-  setHeader('KlarApp', 'Selvhjelpsverktøy for kokainbruk');
-  clearScreen();
-  const s = document.getElementById('screen');
-
-  const title = document.createElement('div');
-  title.className = 'scene-title artifact';
-  title.textContent = 'Velg din modul';
-  s.appendChild(title);
-  await delay(300);
-  await reveal(title);
-
-  const modules = [
-    { icon: '🎯', title: 'Kutt ut', desc: 'Mål om total avholdenhet', id: 'mod0' },
-    { icon: '⚖️', title: 'Kontroll', desc: 'Reduser og bli mer bevisst', id: 'mod1' },
-    { icon: '🔗', title: 'Kombikutt', desc: 'Kokain + alkohol i sosiale settinger', id: 'mod2' },
-  ];
-
-  for (const m of modules) {
-    const card = document.createElement('div');
-    card.className = 'module-card artifact';
-    card.id = m.id;
-    card.innerHTML = '<div class="module-icon">' + m.icon + '</div><div><div class="module-title">' + m.title + '</div><div class="module-desc">' + m.desc + '</div></div>';
-    s.appendChild(card);
-    await delay(400);
-    await reveal(card);
-  }
-
-  await delay(900);
-  const selected = document.getElementById('mod1');
-  if (selected) selected.classList.add('selected');
-
-  await delay(2000);
-  if (!skipFlag) scene2();
-}
-
-// ── SCENE 2 ─────────────────────────────────────────────────────────────────
-async function scene2() {
-  skipFlag = false;
-  currentScene = 1;
-  setDots(1);
-  setHeader('Dagbok', 'Registrer i dag');
-  clearScreen();
-  const s = document.getElementById('screen');
-
-  // Q1: Brukte du kokain?
-  const q1 = document.createElement('div');
-  q1.className = 'diary-section artifact';
-  q1.innerHTML = '<div class="diary-label">Brukte du kokain i dag?</div><div class="btn-row"><button class="btn-yesno" id="btnYes">Ja</button><button class="btn-yesno" id="btnNo">Nei</button></div>';
-  s.appendChild(q1);
-  await delay(300);
-  await reveal(q1);
-  await delay(900);
-  const btnNo = document.getElementById('btnNo');
-  if (btnNo) btnNo.classList.add('selected-no');
-
-  // Q2: Craving
-  const q2 = document.createElement('div');
-  q2.className = 'diary-section artifact';
-  q2.innerHTML = '<div class="diary-label">Sug / craving i dag?</div><div class="craving-scale">' +
-    [1,2,3,4,5].map(n => '<div class="craving-dot" id="cr'+n+'">'+n+'</div>').join('') +
-    '</div>';
-  s.appendChild(q2);
-  await delay(600);
-  await reveal(q2);
-  await delay(900);
-  const cr2 = document.getElementById('cr2');
-  if (cr2) cr2.classList.add('selected');
-
-  // Q3: FAK
-  const q3 = document.createElement('div');
-  q3.className = 'diary-section artifact';
-  q3.innerHTML = '<div class="diary-label">FAK – Hva skjedde?</div>' +
-    '<div style="font-size:12px;color:#9ca3af;margin-bottom:4px">Følelse / situasjon</div>' +
-    '<textarea class="fak-input" id="fakF" readonly></textarea>' +
-    '<div style="font-size:12px;color:#9ca3af;margin:8px 0 4px">Automatisk tanke</div>' +
-    '<textarea class="fak-input" id="fakT" readonly></textarea>';
-  s.appendChild(q3);
-  await delay(600);
-  await reveal(q3);
-  await delay(400);
-
-  // Type into FAK fields
-  const fakF = document.getElementById('fakF');
-  const fakT = document.getElementById('fakT');
-  const text1 = 'Gledet meg til helga';
-  const text2 = 'Tenkte det bare ble én gang';
-  if (fakF) {
-    for (let c of text1) {
-      if (skipFlag) { fakF.value = text1; break; }
-      fakF.value += c;
-      await delay(45);
-    }
-  }
-  await delay(400);
-  if (fakT) {
-    for (let c of text2) {
-      if (skipFlag) { fakT.value = text2; break; }
-      fakT.value += c;
-      await delay(45);
-    }
-  }
-
-  // Save button
-  const saveWrap = document.createElement('div');
-  saveWrap.className = 'artifact';
-  saveWrap.innerHTML = '<button class="save-btn" id="saveBtn">💾 Lagre dagen</button>';
-  s.appendChild(saveWrap);
-  await delay(500);
-  await reveal(saveWrap);
-  await delay(800);
-
-  // Points popup
-  const popup = document.createElement('div');
-  popup.className = 'points-popup';
-  popup.id = 'pointsPopup';
-  popup.innerHTML = '<div class="points-emoji">🎉</div><div class="points-text">+10 poeng!</div><div class="points-sub">Dagen er registrert. Bra jobba!</div>';
-  document.getElementById('phone').appendChild(popup);
-  await delay(200);
+function saveDiary() {
+  const popup = document.getElementById('pointsPopup');
   popup.classList.add('show');
-  await delay(2200);
-  popup.classList.remove('show');
-  await delay(500);
-  popup.remove();
-
-  await delay(1000);
-  if (!skipFlag) scene3();
+  setTimeout(() => {
+    popup.classList.remove('show');
+    goTo('fremgang');
+  }, 2000);
 }
 
-// ── SCENE 3 ─────────────────────────────────────────────────────────────────
-async function scene3() {
-  skipFlag = false;
-  currentScene = 2;
-  setDots(2);
-  setHeader('Fremgang', 'Siste 14 dager');
-  clearScreen();
-  const s = document.getElementById('screen');
+function showCrisis() {
+  document.getElementById('crisisOverlay').classList.add('show');
+}
 
-  const chartCard = document.createElement('div');
-  chartCard.className = 'chart-card artifact';
-  chartCard.innerHTML = '<div class="chart-title">Dager siden sist bruk</div><div style="position:relative;height:180px;"><canvas id="progressChart"></canvas></div>';
-  s.appendChild(chartCard);
-  await delay(300);
-  await reveal(chartCard);
-  await delay(200);
+function hideCrisis() {
+  document.getElementById('crisisOverlay').classList.remove('show');
+}
 
+function initChart() {
   const ctx = document.getElementById('progressChart');
-  if (ctx) {
-    const labels = [];
-    for (let i = 14; i >= 1; i--) labels.push('Dag -' + i);
-    labels.push('I dag');
-    const data = [0,0,1,1,2,3,4,4,5,6,7,8,9,10,11];
+  if (!ctx) return;
+  if (activeChart) { try { activeChart.destroy(); } catch(e){} activeChart = null; }
 
-    activeChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Dager uten bruk',
-          data: data,
-          borderColor: '#2C5F8A',
-          backgroundColor: 'rgba(44,95,138,0.1)',
-          borderWidth: 2.5,
-          tension: 0.4,
-          fill: true,
-          pointRadius: 3,
-          pointBackgroundColor: '#2C5F8A',
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        animation: { duration: 1200 },
-        plugins: { legend: { display: false } },
-        scales: {
-          y: { beginAtZero: true, max: 14, ticks: { stepSize: 7, font: { size: 11 } } },
-          x: { display: false }
-        }
+  const labels = [];
+  for (let i = 14; i >= 1; i--) labels.push('D-' + i);
+  labels.push('I dag');
+  const data = [0,0,1,1,2,3,4,4,5,6,7,8,9,10,11];
+
+  activeChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Dager uten bruk',
+        data,
+        borderColor: '#2C5F8A',
+        backgroundColor: 'rgba(44,95,138,0.1)',
+        borderWidth: 2.5,
+        tension: 0.4,
+        fill: true,
+        pointRadius: 3,
+        pointBackgroundColor: '#2C5F8A',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 800 },
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, max: 14, ticks: { stepSize: 7, font: { size: 11 } } },
+        x: { display: false }
       }
-    });
+    }
+  });
+
+  // Build week calendar
+  const cal = document.getElementById('weekCal');
+  if (cal && !cal.hasChildNodes()) {
+    const days  = ['Man','Tir','Ons','Tor','Fre','Lør','Søn'];
+    const icons = ['✅','✅','✅','✅','','',''];
+    const cls   = ['done','done','done','done','today','',''];
+    cal.innerHTML = days.map((d,i) =>
+      `<div class="cal-day">
+        <div class="day-name">${d}</div>
+        <div class="day-icon ${cls[i]}">${icons[i]}</div>
+      </div>`
+    ).join('');
   }
-
-  await delay(1400);
-
-  // Badge
-  const badge = document.createElement('div');
-  badge.className = 'artifact';
-  badge.innerHTML = '<div class="badge-pill">🏆 14 dager! Fantastisk innsats!</div>';
-  s.appendChild(badge);
-  await reveal(badge);
-
-  // Theme card
-  const theme = document.createElement('div');
-  theme.className = 'chart-card artifact';
-  theme.innerHTML = '<div class="chart-title">📚 Dagens tema</div><div class="theme-card"><div class="theme-title">Dag 14 – Hjernens belønningssystem</div><div class="theme-body">Dopamin-nivåene normaliserer seg gradvis etter kokainbruk. Etter to uker begynner hjernen å gjenopprette naturlig belønningsfølelse. Du er på rett vei.</div></div>';
-  s.appendChild(theme);
-  await delay(500);
-  await reveal(theme);
-
-  await delay(3000);
-  if (!skipFlag) scene4();
 }
-
-// ── SCENE 4 ─────────────────────────────────────────────────────────────────
-async function scene4() {
-  skipFlag = false;
-  currentScene = 3;
-  setDots(3);
-  setHeader('Ukens mål', 'Din plan for uken');
-  clearScreen();
-  const s = document.getElementById('screen');
-
-  // Goal card
-  const goal = document.createElement('div');
-  goal.className = 'diary-section artifact';
-  goal.innerHTML = '<div class="diary-label">🎯 Mål denne uken</div><div style="font-size:15px;font-weight:600;color:#2C5F8A;padding:8px 0">Ikke bruke kokain på lørdag</div>';
-  s.appendChild(goal);
-  await delay(300);
-  await reveal(goal);
-
-  // Calendar
-  const calCard = document.createElement('div');
-  calCard.className = 'diary-section artifact';
-  const days = ['Man','Tir','Ons','Tor','Fre','Lør','Søn'];
-  const icons = ['✅','✅','✅','✅','','',''];
-  const classes = ['done','done','done','done','today','',''];
-  calCard.innerHTML = '<div class="diary-label">Denne uken</div><div class="cal-grid">' +
-    days.map((d,i) => '<div class="cal-day"><div class="day-name">'+d+'</div><div class="day-icon '+classes[i]+'">'+icons[i]+'</div></div>').join('') +
-    '</div>';
-  s.appendChild(calCard);
-  await delay(600);
-  await reveal(calCard);
-
-  await delay(1200);
-
-  // Crisis modal
-  const overlay = document.createElement('div');
-  overlay.className = 'crisis-overlay';
-  overlay.id = 'crisisOverlay';
-  overlay.innerHTML = '<div class="crisis-modal"><h2>🚨 Har du lyst nå?</h2><div class="crisis-sub">Her er tre ting du kan gjøre akkurat nå:</div>' +
-    '<div class="crisis-tip" id="tip0"><span class="tip-icon">📞</span><span class="tip-text">Ring en venn du stoler på</span></div>' +
-    '<div class="crisis-tip" id="tip1"><span class="tip-icon">🚶</span><span class="tip-text">Gå en kort tur – frisk luft hjelper</span></div>' +
-    '<div class="crisis-tip" id="tip2"><span class="tip-icon">📓</span><span class="tip-text">Åpne appen og les dagboken din</span></div>' +
-    '<div class="crisis-final" id="crisisFinal">Du klarer dette. <span class="rusinfo">RUSinfo: 08588</span></div>' +
-    '</div>';
-  document.getElementById('phone').appendChild(overlay);
-  await delay(200);
-  overlay.classList.add('show');
-
-  await delay(600);
-  const t0 = document.getElementById('tip0');
-  if (t0) t0.classList.add('show');
-  await delay(600);
-  const t1 = document.getElementById('tip1');
-  if (t1) t1.classList.add('show');
-  await delay(600);
-  const t2 = document.getElementById('tip2');
-  if (t2) t2.classList.add('show');
-  await delay(800);
-  const cf = document.getElementById('crisisFinal');
-  if (cf) cf.classList.add('show');
-
-  await delay(3500);
-  // Loop back
-  if (!skipFlag) scene1();
-}
-
-function skip() {
-  skipFlag = true;
-  const next = (currentScene + 1) % totalScenes;
-  setTimeout(() => {
-    skipFlag = false;
-    if (next === 0) scene1();
-    else if (next === 1) scene2();
-    else if (next === 2) scene3();
-    else scene4();
-  }, 200);
-}
-
-function restart() {
-  skipFlag = true;
-  setTimeout(() => {
-    skipFlag = false;
-    currentScene = 0;
-    scene1();
-  }, 200);
-}
-
-// Start
-scene1();
 </script>
 </body>
 </html>
