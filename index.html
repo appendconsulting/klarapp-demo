@@ -3,309 +3,256 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KlarApp v2 – Demo</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<title>KlarApp – Klikkbar Demo</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"><\/script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #e8edf2; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; font-family: system-ui, -apple-system, sans-serif; padding: 20px 0 40px; }
-.controls { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-.controls button { padding: 8px 18px; border: none; border-radius: 20px; font-size: 14px; cursor: pointer; font-weight: 600; }
-.btn-skip { background: #2C5F8A; color: #fff; }
-.btn-restart { background: #fff; color: #2C5F8A; border: 2px solid #2C5F8A; }
-.progress-dots { display: flex; gap: 8px; margin-bottom: 18px; }
-.dot { width: 10px; height: 10px; border-radius: 50%; background: #b0bec5; transition: background 0.3s; }
-.dot.active { background: #2C5F8A; }
-.dot.done { background: #27ae60; }
-.phone { width: 375px; height: 812px; background: #fff; border-radius: 44px; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,0.22), 0 0 0 10px #1a1a2e, 0 0 0 12px #2C5F8A; display: flex; flex-direction: column; position: relative; }
-.statusbar { background: #2C5F8A; color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 12px 20px 8px; font-size: 13px; font-weight: 600; flex-shrink: 0; }
-.statusbar-right { display: flex; gap: 6px; align-items: center; font-size: 12px; }
-.appheader { background: #2C5F8A; color: #fff; padding: 12px 20px 14px; flex-shrink: 0; display: flex; justify-content: space-between; align-items: flex-start; }
-.appheader-text h1 { font-size: 20px; font-weight: 700; }
-.appheader-text p { font-size: 12px; opacity: 0.85; margin-top: 2px; }
-.sos-btn { background: #e53e3e; color: #fff; border: none; border-radius: 10px; padding: 6px 10px; font-size: 13px; font-weight: 700; cursor: pointer; flex-shrink: 0; line-height: 1; }
-.screen { flex: 1; overflow-y: auto; background: #f0f4f8; padding: 16px; }
-.artifact { opacity: 0; transform: translateY(10px); transition: opacity 0.35s ease, transform 0.35s ease; }
-.artifact.show { opacity: 1; transform: translateY(0); }
-.scene-title { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; color: #9ca3af; text-transform: uppercase; margin-bottom: 10px; }
-.card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
-.module-card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border: 2px solid transparent; transition: border-color 0.3s, transform 0.15s; cursor: pointer; }
-.module-card.selected { border-color: #2C5F8A; box-shadow: 0 4px 16px rgba(44,95,138,0.2); transform: scale(1.02); }
-.module-icon { font-size: 28px; }
-.module-title { font-size: 15px; font-weight: 700; color: #1a2a3a; }
-.module-desc { font-size: 12px; color: #6b7280; margin-top: 2px; }
-.card-label { font-size: 14px; font-weight: 600; color: #1a2a3a; margin-bottom: 10px; }
-.avatar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
-.avatar-option { background: #f0f4f8; border-radius: 14px; padding: 14px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
-.avatar-option.selected { border-color: #2C5F8A; background: #e8f4fd; }
-.avatar-option .av-emoji { font-size: 32px; }
-.avatar-option .av-name { font-size: 13px; font-weight: 600; color: #374151; margin-top: 6px; }
-.timer-display { text-align: center; padding: 24px 16px; }
-.timer-big { font-size: 42px; font-weight: 800; color: #2C5F8A; }
-.timer-sub { font-size: 14px; color: #6b7280; margin-top: 4px; }
-.savings-card { background: #e8f4fd; border-radius: 14px; padding: 16px; margin-top: 12px; text-align: center; }
-.savings-amount { font-size: 28px; font-weight: 800; color: #1a5276; }
-.savings-sub { font-size: 13px; color: #2c5f8a; margin-top: 4px; }
-.reset-btn { width: 100%; padding: 12px; background: #e53e3e; color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 12px; }
-.tab-row { display: flex; gap: 8px; margin-bottom: 12px; }
-.tab-btn { flex: 1; padding: 9px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 13px; font-weight: 600; background: #fff; cursor: pointer; color: #6b7280; }
-.tab-btn.active { background: #2C5F8A; color: #fff; border-color: #2C5F8A; }
-.fak-label { font-size: 12px; color: #9ca3af; margin-bottom: 3px; margin-top: 8px; }
-.fak-input { width: 100%; background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 9px 11px; font-size: 13px; color: #374151; min-height: 40px; resize: none; font-family: inherit; }
-.success-badge { background: #d4edda; border-radius: 12px; padding: 12px 14px; margin-top: 10px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: #155724; }
-.trigger-chips { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-.chip { padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; background: #f0f4f8; color: #374151; border: 2px solid transparent; cursor: pointer; }
-.chip.active { background: #2C5F8A; color: #fff; }
-.trigger-item { background: #fff; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-.trigger-name { font-size: 14px; font-weight: 600; color: #1a2a3a; }
-.trigger-bar { background: #e5e7eb; border-radius: 4px; height: 6px; margin-top: 8px; }
-.trigger-fill { background: #e67e22; height: 6px; border-radius: 4px; }
-.pattern-note { background: #fff9c4; border-radius: 12px; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #7d6608; margin-top: 8px; }
-.chart-card { background: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
-.chart-title { font-size: 15px; font-weight: 700; color: #1a2a3a; margin-bottom: 12px; }
-.badge-row { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-.badge-item { border-radius: 12px; padding: 10px 12px; text-align: center; flex: 1; min-width: 80px; }
-.badge-item.earned-gold { background: #fff9c4; border: 2px solid #f9a825; }
-.badge-item.earned-green { background: #d4edda; border: 2px solid #27ae60; }
-.badge-item.earned-blue { background: #e8f4fd; border: 2px solid #2C5F8A; }
-.badge-item.locked { background: #f3f4f6; border: 2px solid #d1d5db; opacity: 0.6; }
-.badge-emoji { font-size: 20px; }
-.badge-label { font-size: 11px; font-weight: 700; color: #374151; margin-top: 4px; }
-.motiv-card { background: #fff; border-radius: 14px; padding: 14px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); display: flex; align-items: center; gap: 12px; }
-.motiv-emoji { font-size: 28px; }
-.motiv-title { font-size: 15px; font-weight: 700; color: #1a2a3a; }
-.motiv-sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
-.goal-progress-bar { background: #e5e7eb; border-radius: 8px; height: 10px; margin-top: 8px; }
-.goal-fill { background: #2C5F8A; height: 10px; border-radius: 8px; transition: width 1s ease; width: 0; }
-.stars { font-size: 20px; margin-top: 8px; letter-spacing: 2px; }
-.crisis-section { background: #fff; border-radius: 14px; padding: 14px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
-.crisis-section-title { font-size: 14px; font-weight: 700; color: #1a2a3a; margin-bottom: 8px; }
-.crisis-item { display: flex; align-items: center; gap: 10px; background: #f0f4f8; border-radius: 10px; padding: 10px 12px; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #374151; }
-.saved-status { background: #d4edda; border-radius: 12px; padding: 12px 16px; text-align: center; font-size: 15px; font-weight: 700; color: #155724; margin-top: 8px; }
-.bottom-nav { display: flex; background: #fff; border-top: 1px solid #e5e7eb; padding: 8px 0 4px; flex-shrink: 0; }
-.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; font-weight: 600; color: #9ca3af; }
-.nav-item.active { color: #2C5F8A; }
-.nav-item .nav-icon { font-size: 22px; }
-.points-popup { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: #fff; border-radius: 20px; padding: 24px 32px; text-align: center; box-shadow: 0 16px 48px rgba(0,0,0,0.18); z-index: 100; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-.points-popup.show { transform: translate(-50%, -50%) scale(1); }
-.points-popup .pe { font-size: 48px; }
-.points-popup .pt { font-size: 26px; font-weight: 800; color: #27ae60; margin-top: 8px; }
-.points-popup .ps { font-size: 14px; color: #6b7280; margin-top: 4px; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#e8edf2;display:flex;flex-direction:column;align-items:center;min-height:100vh;font-family:system-ui,-apple-system,sans-serif;padding:20px 0 40px}
+.nav-hint{font-size:13px;color:#6b7280;margin-bottom:10px;font-weight:600}
+.progress-dots{display:flex;gap:8px;margin-bottom:18px}
+.dot{width:10px;height:10px;border-radius:50%;background:#b0bec5;transition:background .3s;cursor:pointer}
+.dot.active{background:#2C5F8A}
+.dot.done{background:#27ae60}
+.phone{width:375px;height:812px;background:#fff;border-radius:44px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.22),0 0 0 10px #1a1a2e,0 0 0 12px #2C5F8A;display:flex;flex-direction:column;position:relative}
+.statusbar{background:#2C5F8A;color:#fff;display:flex;justify-content:space-between;align-items:center;padding:12px 20px 8px;font-size:13px;font-weight:600;flex-shrink:0}
+.statusbar-right{display:flex;gap:6px;align-items:center;font-size:12px}
+.appheader{background:#2C5F8A;color:#fff;padding:10px 16px 12px;flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
+.appheader-left h1{font-size:20px;font-weight:700}
+.appheader-left p{font-size:12px;opacity:.85;margin-top:2px}
+.sos-btn{background:#e53e3e;color:#fff;border:none;border-radius:10px;padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer}
+.screen{flex:1;overflow-y:auto;background:#f0f4f8;padding:16px}
+.bottom-nav{display:flex;background:#fff;border-top:1px solid #e5e7eb;padding:8px 0 4px;flex-shrink:0}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;font-weight:600;color:#9ca3af;cursor:pointer;transition:color .2s}
+.nav-item.active{color:#2C5F8A}
+.nav-item .nav-icon{font-size:22px}
+.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.card-label{font-size:14px;font-weight:600;color:#1a2a3a;margin-bottom:10px}
+.scene-title{font-size:12px;font-weight:700;letter-spacing:.08em;color:#9ca3af;text-transform:uppercase;margin-bottom:10px}
+.module-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,.07);border:2px solid transparent;transition:all .2s;cursor:pointer}
+.module-card:hover{border-color:#2C5F8A;transform:scale(1.01)}
+.module-card.selected{border-color:#2C5F8A;box-shadow:0 4px 16px rgba(44,95,138,.2);background:#f0f7ff}
+.module-icon{font-size:28px}
+.module-title{font-size:15px;font-weight:700;color:#1a2a3a}
+.module-desc{font-size:12px;color:#6b7280;margin-top:2px}
+.avatar-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.avatar-option{background:#f0f4f8;border-radius:14px;padding:14px;text-align:center;border:2px solid transparent;cursor:pointer;transition:all .2s}
+.avatar-option:hover{border-color:#2C5F8A}
+.avatar-option.selected{border-color:#2C5F8A;background:#e8f4fd}
+.av-emoji{font-size:32px}
+.av-name{font-size:13px;font-weight:600;color:#374151;margin-top:6px}
+.timer-big{font-size:40px;font-weight:800;color:#2C5F8A;text-align:center;padding:16px 0 4px}
+.timer-sub{font-size:14px;color:#6b7280;text-align:center}
+.timer-stats{display:flex;justify-content:center;gap:24px;margin-top:12px}
+.timer-stat{text-align:center}
+.timer-stat .val{font-size:22px;font-weight:800;color:#2C5F8A}
+.timer-stat .lbl{font-size:11px;color:#9ca3af}
+.savings-card{background:#e8f4fd;border-radius:14px;padding:16px;margin-top:12px;text-align:center}
+.savings-amount{font-size:28px;font-weight:800;color:#1a5276}
+.savings-sub{font-size:13px;color:#2c5f8a;margin-top:4px}
+.reset-btn{width:100%;padding:12px;background:#e53e3e;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px}
+.btn-row{display:flex;gap:8px;margin-bottom:10px}
+.tab-btn{flex:1;padding:9px;border:2px solid #e5e7eb;border-radius:10px;font-size:13px;font-weight:600;background:#fff;cursor:pointer;color:#6b7280;transition:all .2s}
+.tab-btn.active{background:#2C5F8A;color:#fff;border-color:#2C5F8A}
+.fak-label{font-size:12px;color:#9ca3af;margin-bottom:3px;margin-top:8px}
+.fak-input{width:100%;background:#f9fafb;border:1.5px solid #e5e7eb;border-radius:10px;padding:9px 11px;font-size:13px;color:#374151;min-height:42px;resize:none;font-family:inherit}
+.fak-input:focus{outline:none;border-color:#2C5F8A}
+.save-btn{width:100%;padding:13px;background:#2C5F8A;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;transition:background .2s}
+.save-btn:hover{background:#1e4466}
+.success-banner{background:#d4edda;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:700;color:#155724;margin-top:10px;display:none}
+.trigger-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;background:#f0f4f8;color:#374151;border:2px solid transparent;cursor:pointer;transition:all .2s}
+.chip.active{background:#2C5F8A;color:#fff}
+.chip:hover{border-color:#2C5F8A}
+.trigger-item{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.trigger-name{font-size:14px;font-weight:600;color:#1a2a3a}
+.trigger-bar{background:#e5e7eb;border-radius:4px;height:6px;margin-top:8px}
+.trigger-fill{background:#e67e22;height:6px;border-radius:4px;transition:width .6s ease}
+.pattern-note{background:#fff9c4;border-radius:12px;padding:10px 14px;font-size:13px;font-weight:600;color:#7d6608;margin-top:8px}
+.chart-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.chart-title{font-size:15px;font-weight:700;color:#1a2a3a;margin-bottom:12px}
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.badge-item{border-radius:12px;padding:10px;text-align:center;flex:1;min-width:70px}
+.badge-item.gold{background:#fff9c4;border:2px solid #f9a825}
+.badge-item.green{background:#d4edda;border:2px solid #27ae60}
+.badge-item.blue{background:#e8f4fd;border:2px solid #2C5F8A}
+.badge-item.locked{background:#f3f4f6;border:2px solid #d1d5db;opacity:.55}
+.badge-emoji{font-size:20px}
+.badge-label{font-size:11px;font-weight:700;color:#374151;margin-top:4px}
+.motiv-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.07);display:flex;align-items:center;gap:12px;cursor:pointer;border:2px solid transparent;transition:all .2s}
+.motiv-card:hover{border-color:#2C5F8A}
+.motiv-card.selected{border-color:#2C5F8A;background:#f0f7ff}
+.motiv-emoji{font-size:28px}
+.motiv-title{font-size:15px;font-weight:700;color:#1a2a3a}
+.motiv-sub{font-size:12px;color:#6b7280;margin-top:2px}
+.goal-bar{background:#e5e7eb;border-radius:8px;height:10px;margin-top:8px}
+.goal-fill{background:#2C5F8A;height:10px;border-radius:8px;transition:width .8s ease}
+.stars{font-size:20px;margin-top:8px;letter-spacing:2px}
+.crisis-section{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.crisis-section-title{font-size:14px;font-weight:700;color:#1a2a3a;margin-bottom:8px}
+.crisis-item{display:flex;align-items:center;gap:10px;background:#f0f4f8;border-radius:10px;padding:10px 12px;margin-bottom:6px;font-size:13px;font-weight:600;color:#374151;cursor:pointer;transition:background .2s}
+.crisis-item:hover{background:#e8f4fd}
+.crisis-item.checked{background:#d4edda;color:#155724}
+.saved-status{background:#d4edda;border-radius:12px;padding:12px 16px;text-align:center;font-size:15px;font-weight:700;color:#155724;margin-top:8px;display:none}
+.sos-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;z-index:300;display:none}
+.sos-modal{background:#fff;border-radius:24px 24px 0 0;padding:24px 20px 32px;width:100%}
+.sos-modal h2{font-size:20px;font-weight:800;color:#e53e3e;margin-bottom:4px}
+.sos-modal p{font-size:13px;color:#6b7280;margin-bottom:16px}
+.sos-tip{display:flex;align-items:center;gap:12px;background:#f0f4f8;border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:14px;font-weight:600;color:#1a2a3a}
+.sos-tip-icon{font-size:22px;flex-shrink:0}
+.sos-close{width:100%;padding:12px;background:#e53e3e;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px}
+.next-arrow{position:fixed;bottom:32px;right:calc(50% - 230px);background:#2C5F8A;color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:22px;cursor:pointer;box-shadow:0 4px 16px rgba(44,95,138,.4);display:flex;align-items:center;justify-content:center;transition:background .2s}
+.next-arrow:hover{background:#1e4466}
+.prev-arrow{position:fixed;bottom:32px;left:calc(50% - 230px);background:#fff;color:#2C5F8A;border:2px solid #2C5F8A;border-radius:50%;width:52px;height:52px;font-size:22px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;transition:all .2s}
+.prev-arrow:hover{background:#f0f4f8}
 </style>
 </head>
 <body>
-<div class="controls">
-  <button class="btn-restart" onclick="restart()">↺ Start på nytt</button>
-  <button class="btn-skip" onclick="skip()">Hopp over →</button>
-</div>
+<div class="nav-hint">Klikk på kortene og knappene — eller bruk pilene</div>
 <div class="progress-dots" id="dots"></div>
 <div class="phone" id="phone">
-  <div class="statusbar">
-    <span>9:41</span>
-    <div class="statusbar-right"><span>▲▲▲</span><span>WiFi</span><span>🔋 87%</span></div>
-  </div>
+  <div class="statusbar"><span>9:41</span><div class="statusbar-right"><span>▲▲▲</span><span>WiFi</span><span>🔋 87%</span></div></div>
   <div class="appheader" id="appheader">
-    <div class="appheader-text"><h1>KlarApp</h1><p>Selvhjelpsverktøy</p></div>
-    <button class="sos-btn">🚨 SOS</button>
+    <div class="appheader-left"><h1>KlarApp</h1><p>Selvhjelpsverktøy</p></div>
+    <button class="sos-btn" onclick="showSOS()">🚨 SOS</button>
   </div>
   <div class="screen" id="screen"></div>
-  <div class="bottom-nav">
-    <div class="nav-item active"><span class="nav-icon">🏠</span>Hjem</div>
-    <div class="nav-item"><span class="nav-icon">📓</span>Dagbok</div>
-    <div class="nav-item"><span class="nav-icon">📊</span>Fremgang</div>
-    <div class="nav-item"><span class="nav-icon">🛟</span>Hjelp</div>
+  <div class="bottom-nav" id="bottomnav">
+    <div class="nav-item" id="nav0" onclick="goScene(0)"><span class="nav-icon">🏠</span>Hjem</div>
+    <div class="nav-item" id="nav1" onclick="goScene(2)"><span class="nav-icon">📓</span>Dagbok</div>
+    <div class="nav-item" id="nav2" onclick="goScene(4)"><span class="nav-icon">📊</span>Fremgang</div>
+    <div class="nav-item" id="nav3" onclick="goScene(6)"><span class="nav-icon">🛟</span>Krise</div>
   </div>
 </div>
+<div class="sos-overlay" id="sosOverlay" onclick="hideSOS(event)">
+  <div class="sos-modal">
+    <h2>🚨 Krisehjelp</h2>
+    <p>Her er tre ting du kan gjøre akkurat nå</p>
+    <div class="sos-tip"><span class="sos-tip-icon">📞</span>Ring Morten: +47 911 22 333</div>
+    <div class="sos-tip"><span class="sos-tip-icon">🚶</span>Gå en tur – frisk luft hjelper</div>
+    <div class="sos-tip"><span class="sos-tip-icon">📓</span>Åpne dagboken i appen</div>
+    <div style="text-align:center;font-size:16px;font-weight:800;color:#2C5F8A;margin:12px 0">RUSinfo: 08588</div>
+    <button class="sos-close" onclick="hideSOS(null)">Lukk</button>
+  </div>
+</div>
+<button class="prev-arrow" id="prevBtn" onclick="prevScene()">←</button>
+<button class="next-arrow" id="nextBtn" onclick="nextScene()">→</button>
 <script>
 const TOTAL = 8;
-let skipFlag = false, currentScene = 0, activeChart = null;
+let cur = 0;
+let activeChart = null;
 
-// Build dots
+// Dots
 const dotsEl = document.getElementById('dots');
-for (let i = 0; i < TOTAL; i++) { const d = document.createElement('div'); d.className='dot'; d.id='dot'+i; dotsEl.appendChild(d); }
+for(let i=0;i<TOTAL;i++){const d=document.createElement('div');d.className='dot';d.id='dot'+i;d.onclick=()=>goScene(i);dotsEl.appendChild(d);}
 
-function delay(ms) {
-  return new Promise(res => {
-    if (skipFlag) return res();
-    const t = setTimeout(res, ms);
-    const p = setInterval(() => { if (skipFlag) { clearTimeout(t); clearInterval(p); res(); } }, 50);
-  });
-}
-function setDots(a) {
-  for (let i=0;i<TOTAL;i++) { const d=document.getElementById('dot'+i); d.className='dot'; if(i<a) d.classList.add('done'); else if(i===a) d.classList.add('active'); }
-}
-function setHeader(t, s) {
-  document.getElementById('appheader').innerHTML = '<div class="appheader-text"><h1>'+t+'</h1><p>'+s+'</p></div><button class="sos-btn">🚨 SOS</button>';
-}
-async function reveal(el, d=0) { await delay(d); el.classList.add('show'); }
-function clr() {
-  document.getElementById('screen').innerHTML='';
-  if(activeChart){try{activeChart.destroy();}catch(e){}activeChart=null;}
-}
-function mk(tag, cls, html) { const e=document.createElement(tag); e.className=cls; if(html) e.innerHTML=html; return e; }
+function setDots(a){for(let i=0;i<TOTAL;i++){const d=document.getElementById('dot'+i);d.className='dot';if(i<a)d.classList.add('done');else if(i===a)d.classList.add('active');}}
+function setHeader(t,s){document.getElementById('appheader').innerHTML='<div class="appheader-left"><h1>'+t+'</h1><p>'+s+'</p></div><button class="sos-btn" onclick="showSOS()">🚨 SOS</button>';}
+function clr(){document.getElementById('screen').innerHTML='';if(activeChart){try{activeChart.destroy();}catch(e){}activeChart=null;}}
+function setNav(idx){['nav0','nav1','nav2','nav3'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.className='nav-item'+(([0,1],[2,3],[4,5],[6,7])[i].includes(idx)?' active':'');});}
+function goScene(n){cur=n;scenes[n]();}
+function nextScene(){goScene((cur+1)%TOTAL);}
+function prevScene(){goScene((cur-1+TOTAL)%TOTAL);}
+function showSOS(){const o=document.getElementById('sosOverlay');o.style.display='flex';}
+function hideSOS(e){if(!e||e.target===document.getElementById('sosOverlay')){document.getElementById('sosOverlay').style.display='none';}}
 
-// SCENE 1 – Modulvalg
-async function scene1() {
-  skipFlag=false; currentScene=0; setDots(0); clr();
-  setHeader('KlarApp','Velg din modul');
-  const s = document.getElementById('screen');
-  const title = mk('div','scene-title artifact','VELG DIN MODUL'); s.appendChild(title);
-  await delay(300); await reveal(title);
-  const mods = [
-    {icon:'🎯',t:'Kutt ut',d:'Mål om total avholdenhet',id:'m0'},
-    {icon:'⚖️',t:'Kontroll',d:'Reduser og bli mer bevisst',id:'m1'},
-    {icon:'🔗',t:'Kombikutt',d:'Kokain + alkohol i sosiale settinger',id:'m2'},
-    {icon:'📚',t:'Lær om kokain',d:'Kunnskap om avhengighet og hjernen',id:'m3'},
-  ];
-  for (const m of mods) {
-    const c = mk('div','module-card artifact'); c.id=m.id;
-    c.innerHTML = '<div class="module-icon">'+m.icon+'</div><div><div class="module-title">'+m.t+'</div><div class="module-desc">'+m.d+'</div></div>';
-    s.appendChild(c); await delay(350); await reveal(c);
-  }
-  await delay(800); const sel=document.getElementById('m1'); if(sel) sel.classList.add('selected');
-  await delay(2200); if(!skipFlag) scene2();
+// SCENE 1: Modulvalg
+function scene0(){
+  clr();setDots(0);setHeader('KlarApp','Velg din modul');setNav(0);
+  const s=document.getElementById('screen');
+  s.innerHTML='<div class="scene-title">VELG DIN MODUL</div>'
+  +['🎯|Kutt ut|Mål om total avholdenhet','⚖️|Kontroll|Reduser og bli mer bevisst','🔗|Kombikutt|Kokain + alkohol i sosiale settinger','📚|Lær om kokain|Kunnskap om avhengighet og hjernen'].map((m,i)=>{
+    const[icon,t,d]=m.split('|');
+    return '<div class="module-card'+(i===1?' selected':'')+'" onclick="selectModule(this)" data-id="m'+i+'"><div class="module-icon">'+icon+'</div><div><div class="module-title">'+t+'</div><div class="module-desc">'+d+'</div></div></div>';
+  }).join('');
 }
+function selectModule(el){document.querySelectorAll('.module-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
 
-// SCENE 2 – Profilvalg / Avatar
-async function scene2() {
-  skipFlag=false; currentScene=1; setDots(1); clr();
-  setHeader('Profil','Sett opp din profil');
-  const s = document.getElementById('screen');
-  const title = mk('div','scene-title artifact','VELG DIN AVATAR'); s.appendChild(title);
-  await delay(300); await reveal(title);
-  const av = mk('div','card artifact'); av.innerHTML = '<div class="card-label">👤 Hvem er du?</div><div class="avatar-grid"><div class="avatar-option selected" id="av0"><div class="av-emoji">🦁</div><div class="av-name">Leo</div></div><div class="avatar-option" id="av1"><div class="av-emoji">🐺</div><div class="av-name">Ulv</div></div><div class="avatar-option" id="av2"><div class="av-emoji">🦅</div><div class="av-name">Ørn</div></div><div class="avatar-option" id="av3"><div class="av-emoji">🦊</div><div class="av-name">Rev</div></div></div>'; s.appendChild(av);
-  await delay(400); await reveal(av);
-  const nameCard = mk('div','card artifact'); nameCard.innerHTML = '<div class="card-label">📝 Ditt navn i appen</div><div style="background:#f0f4f8;border-radius:10px;padding:10px 14px;font-size:15px;font-weight:700;color:#2C5F8A;margin-top:4px">Ole_K ✓</div>'; s.appendChild(nameCard);
-  await delay(600); await reveal(nameCard);
-  await delay(800);
-  const av1 = document.getElementById('av1'); if(av1){av1.classList.add('selected'); document.getElementById('av0').classList.remove('selected');}
-  await delay(2000); if(!skipFlag) scene3();
+// SCENE 2: Avatar
+function scene1(){
+  clr();setDots(1);setHeader('Profil','Sett opp profilen din');setNav(0);
+  const s=document.getElementById('screen');
+  s.innerHTML='<div class="scene-title">VELG AVATAR</div><div class="card"><div class="card-label">👤 Hvem er du?</div><div class="avatar-grid">'
+  +[['🦁','Leo'],['🐺','Ulv'],['🦅','Ørn'],['🦊','Rev']].map(([e,n],i)=>`<div class="avatar-option${i===0?' selected':''}" onclick="selAvatar(this)"><div class="av-emoji">${e}</div><div class="av-name">${n}</div></div>`).join('')
+  +'</div></div><div class="card"><div class="card-label">📝 Brukernavn</div><div style="background:#f0f4f8;border-radius:10px;padding:10px 14px;font-size:15px;font-weight:700;color:#2C5F8A;margin-top:4px">Ole_K ✓</div></div>';
 }
+function selAvatar(el){document.querySelectorAll('.avatar-option').forEach(a=>a.classList.remove('selected'));el.classList.add('selected');}
 
-// SCENE 3 – Tidtaker + Sparekalkulator
-async function scene3() {
-  skipFlag=false; currentScene=2; setDots(2); clr();
-  setHeader('Tidtaker','Sobriety tracker');
-  const s = document.getElementById('screen');
-  const title = mk('div','scene-title artifact','TID SIDEN SIST BRUK'); s.appendChild(title);
-  await delay(300); await reveal(title);
-  const timer = mk('div','card artifact'); timer.innerHTML = '<div class="timer-display"><div class="timer-big" id="timerBig">14 dager</div><div class="timer-sub">6 timer 23 min siden sist bruk</div><div style="margin-top:16px;display:flex;justify-content:center;gap:20px"><div style="text-align:center"><div style="font-size:24px;font-weight:800;color:#2C5F8A">336</div><div style="font-size:11px;color:#9ca3af">TIMER</div></div><div style="text-align:center"><div style="font-size:24px;font-weight:800;color:#2C5F8A">20,160</div><div style="font-size:11px;color:#9ca3af">MINUTTER</div></div></div></div>'; s.appendChild(timer);
-  await delay(400); await reveal(timer);
-  const savings = mk('div','card artifact'); savings.innerHTML = '<div class="card-label">💰 Sparekalkulator</div><div class="savings-card"><div class="savings-amount" id="savingsAmt">0 kr</div><div class="savings-sub">spart på 14 dager (à 250 kr/dag)</div></div><button class="reset-btn">🔄 Nullstill teller</button>'; s.appendChild(savings);
-  await delay(600); await reveal(savings);
-  await delay(400);
-  let amt = 0; const target = 3450; const el = document.getElementById('savingsAmt');
-  const step = Math.ceil(target/30);
-  for(let i=0;i<30;i++){if(skipFlag)break; amt=Math.min(amt+step,target); if(el) el.textContent=amt.toLocaleString('nb-NO')+' kr'; await delay(50);}
-  await delay(2500); if(!skipFlag) scene4();
+// SCENE 3: Tidtaker
+function scene2(){
+  clr();setDots(2);setHeader('Tidtaker','Sobriety tracker');setNav(1);
+  const s=document.getElementById('screen');
+  s.innerHTML='<div class="scene-title">TID SIDEN SIST BRUK</div>'
+  +'<div class="card"><div class="timer-big">14 dager</div><div class="timer-sub">6 timer 23 min siden sist bruk</div><div class="timer-stats"><div class="timer-stat"><div class="val">336</div><div class="lbl">TIMER</div></div><div class="timer-stat"><div class="val">20 160</div><div class="lbl">MINUTTER</div></div></div></div>'
+  +'<div class="card"><div class="card-label">💰 Sparekalkulator</div><div class="savings-card"><div class="savings-amount">3 450 kr</div><div class="savings-sub">spart på 14 dager (à 250 kr/dag)</div></div><button class="reset-btn" onclick="resetTimer()">🔄 Nullstill teller</button></div>';
 }
+function resetTimer(){if(confirm('Nullstill tidtaker?')){document.querySelector('.timer-big').textContent='0 dager';document.querySelector('.savings-amount').textContent='0 kr';}}
 
-// SCENE 4 – Utvidet FAK-dagbok
-async function scene4() {
-  skipFlag=false; currentScene=3; setDots(3); clr();
-  setHeader('Dagbok','Registrer i dag');
-  const s = document.getElementById('screen');
-  const title = mk('div','scene-title artifact','FAK-SKJEMA'); s.appendChild(title);
-  await delay(300); await reveal(title);
-  const tabs = mk('div','card artifact'); tabs.innerHTML = '<div class="tab-row"><button class="tab-btn" id="tabRelapse">↩️ Tilbakefall</button><button class="tab-btn active" id="tabCope">✅ Vellykket mestring</button></div><div class="fak-label">Følelse / situasjon</div><textarea class="fak-input" id="fakF" readonly></textarea><div class="fak-label">Automatisk tanke</div><textarea class="fak-input" id="fakT" readonly></textarea><div class="fak-label">Handling</div><textarea class="fak-input" id="fakH" readonly></textarea>'; s.appendChild(tabs);
-  await delay(400); await reveal(tabs);
-  await delay(500);
-  async function typeInto(id, text) { const el=document.getElementById(id); if(!el)return; for(let c of text){if(skipFlag){el.value=text;break;} el.value+=c; await delay(40);} }
-  await typeInto('fakF','Klarte å si nei på fest!');
-  await delay(200);
-  await typeInto('fakT','Var stolt av meg selv');
-  await delay(200);
-  await typeInto('fakH','Gikk hjem tidlig, ringte venn');
-  await delay(500);
-  const badge = mk('div','success-badge artifact'); badge.innerHTML = '🌟 +20 poeng – Mestring registrert!'; s.appendChild(badge);
-  await reveal(badge);
-  const pp = mk('div','points-popup'); pp.innerHTML='<div class="pe">🌟</div><div class="pt">+20 poeng!</div><div class="ps">Vellykket mestring loggført</div>'; document.getElementById('phone').appendChild(pp);
-  await delay(200); pp.classList.add('show'); await delay(2000); pp.classList.remove('show'); await delay(500); pp.remove();
-  await delay(1000); if(!skipFlag) scene5();
+// SCENE 4: FAK-dagbok
+function scene3(){
+  clr();setDots(3);setHeader('Dagbok','Registrer i dag');setNav(1);
+  const s=document.getElementById('screen');
+  s.innerHTML='<div class="scene-title">FAK-SKJEMA</div><div class="card">'
+  +'<div class="btn-row"><button class="tab-btn" id="tabR" onclick="switchTab(false)">↩️ Tilbakefall</button><button class="tab-btn active" id="tabM" onclick="switchTab(true)">✅ Vellykket mestring</button></div>'
+  +'<div class="fak-label">Følelse / situasjon</div><textarea class="fak-input" id="fakF" placeholder="Beskriv situasjonen..."></textarea>'
+  +'<div class="fak-label">Automatisk tanke</div><textarea class="fak-input" id="fakT" placeholder="Hva tenkte du?"></textarea>'
+  +'<div class="fak-label">Handling</div><textarea class="fak-input" id="fakH" placeholder="Hva gjorde du?"></textarea>'
+  +'<button class="save-btn" onclick="saveFAK()">💾 Lagre</button>'
+  +'<div class="success-banner" id="fakSuccess">🌟 +20 poeng – Mestring registrert!</div>'
+  +'</div>';
+}
+function switchTab(mestring){document.getElementById('tabR').className='tab-btn'+(mestring?'':' active');document.getElementById('tabM').className='tab-btn'+(mestring?' active':'');}
+function saveFAK(){const b=document.getElementById('fakSuccess');b.style.display='flex';setTimeout(()=>b.style.display='none',2500);}
+
+// SCENE 5: Triggerdagbok
+function scene4(){
+  clr();setDots(4);setHeader('Triggerdagbok','Mine triggere og mønstre');setNav(1);
+  const s=document.getElementById('screen');
+  s.innerHTML='<div class="scene-title">MINE TRIGGERE</div>'
+  +'<div class="trigger-chips"><div class="chip active" onclick="selChip(this)">😔 Emosjonell</div><div class="chip" onclick="selChip(this)">👥 Sosial</div><div class="chip" onclick="selChip(this)">📍 Situasjon</div></div>'
+  +[['😔 Ensomhet',80],['🍺 Sosiale fester',60],['😤 Stress jobb',40]].map(([n,p])=>'<div class="trigger-item"><div class="trigger-name">'+n+'</div><div class="trigger-bar"><div class="trigger-fill" style="width:'+p+'%"></div></div></div>').join('')
+  +'<div class="pattern-note">📈 Mønster: Triggere øker fredag/lørdag</div>';
+}
+function selChip(el){document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+
+// SCENE 6: Fremgang + Badges
+function scene5(){
+  clr();setDots(5);setHeader('Fremgang','Siste 14 dager');setNav(2);
+  const s=document.getElementById('screen');
+  s.innerHTML='<div class="chart-card"><div class="chart-title">Dager uten bruk</div><div style="position:relative;height:160px"><canvas id="pc"></canvas></div></div>'
+  +'<div class="chart-card"><div class="chart-title">🏆 Dine prestasjoner</div><div class="badge-row">'
+  +'<div class="badge-item gold"><div class="badge-emoji">⭐</div><div class="badge-label">7 dager fri</div></div>'
+  +'<div class="badge-item green"><div class="badge-emoji">✅</div><div class="badge-label">Første logg</div></div>'
+  +'<div class="badge-item blue"><div class="badge-emoji">🛡️</div><div class="badge-label">Kriseplan</div></div>'
+  +'<div class="badge-item locked"><div class="badge-emoji">🔒</div><div class="badge-label">30 dager fri</div></div>'
+  +'</div></div>';
+  setTimeout(()=>{
+    const ctx=document.getElementById('pc');
+    if(!ctx)return;
+    const labels=[];for(let i=14;i>=1;i--)labels.push('D-'+i);labels.push('I dag');
+    activeChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{data:[0,0,1,1,2,3,4,4,5,6,7,8,9,10,11],borderColor:'#2C5F8A',backgroundColor:'rgba(44,95,138,0.1)',borderWidth:2.5,tension:0.4,fill:true,pointRadius:3,pointBackgroundColor:'#2C5F8A'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:14,ticks:{stepSize:7,font:{size:11}}},x:{display:false}}}});
+  },100);
 }
 
-// SCENE 5 – Triggerdagbok
-async function scene5() {
-  skipFlag=false; currentScene=4; setDots(4); clr();
-  setHeader('Triggerdagbok','Mine triggere og mønstre');
-  const s = document.getElementById('screen');
-  const title = mk('div','scene-title artifact','TRIGGER-KATEGORIER'); s.appendChild(title);
-  await delay(300); await reveal(title);
-  const chips = mk('div','card artifact'); chips.innerHTML='<div class="trigger-chips"><div class="chip active">😔 Emosjonell</div><div class="chip">👥 Sosial</div><div class="chip">📍 Situasjon</div></div>'; s.appendChild(chips);
-  await delay(400); await reveal(chips);
-  const triggers = [{name:'😔 Ensomhet', pct:80},{name:'🍺 Sosiale fester', pct:60},{name:'😤 Stress jobb', pct:40}];
-  for(const t of triggers){
-    const c = mk('div','trigger-item artifact'); c.innerHTML='<div class="trigger-name">'+t.name+'</div><div class="trigger-bar"><div class="trigger-fill" id="tf'+t.pct+'" style="width:0%"></div></div>'; s.appendChild(c);
-    await delay(400); await reveal(c); await delay(100);
-    const bar=document.getElementById('tf'+t.pct); if(bar) bar.style.width=t.pct+'%';
-  }
-  await delay(600);
-  const pat = mk('div','pattern-note artifact'); pat.innerHTML='📈 Mønster: Triggere øker fredag/lørdag'; s.appendChild(pat);
-  await reveal(pat);
-  await delay(2800); if(!skipFlag) scene6();
+// SCENE 7: Motivasjonsvegg + Ukens mål
+function scene6(){
+  clr();setDots(6);setHeader('Motivasjon','Ukens mål og motivasjon');setNav(2);
+  const s=document.getElementById('screen');
+  s.innerHTML='<div class="scene-title">💪 MIN MOTIVASJONSVEGG</div>'
+  +[['👨‍👧','Familie','For barna mine'],['❤️','Helse','Leve lenger og bedre'],['💰','Økonomi','Spare til leilighet']].map(([e,t,d])=>'<div class="motiv-card" onclick="this.classList.toggle('selected')"><div class="motiv-emoji">'+e+'</div><div><div class="motiv-title">'+t+'</div><div class="motiv-sub">'+d+'</div></div></div>').join('')
+  +'<div class="card"><div class="card-label">🎯 Ukens mål</div><div style="font-size:15px;font-weight:600;color:#2C5F8A;margin:6px 0">Ikke bruke fredag/lørdag</div><div class="goal-bar"><div class="goal-fill" style="width:80%"></div></div><div style="font-size:12px;color:#6b7280;margin-top:6px">4 av 5 dager fullført (80%)</div><div class="stars">⭐⭐⭐⭐☆</div></div>';
 }
 
-// SCENE 6 – Fremgang + Badges
-async function scene6() {
-  skipFlag=false; currentScene=5; setDots(5); clr();
-  setHeader('Fremgang','Siste 14 dager');
-  const s = document.getElementById('screen');
-  const chartCard = mk('div','chart-card artifact'); chartCard.innerHTML='<div class="chart-title">Dager uten bruk</div><div style="position:relative;height:160px;"><canvas id="pc"></canvas></div>'; s.appendChild(chartCard);
-  await delay(300); await reveal(chartCard); await delay(200);
-  const ctx=document.getElementById('pc');
-  if(ctx){ const labels=[]; for(let i=14;i>=1;i--) labels.push('D-'+i); labels.push('I dag'); activeChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'',data:[0,0,1,1,2,3,4,4,5,6,7,8,9,10,11],borderColor:'#2C5F8A',backgroundColor:'rgba(44,95,138,0.1)',borderWidth:2.5,tension:0.4,fill:true,pointRadius:3,pointBackgroundColor:'#2C5F8A'}]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:1200},plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:14,ticks:{stepSize:7,font:{size:11}}},x:{display:false}}}}); }
-  await delay(1400);
-  const badgeCard = mk('div','chart-card artifact'); badgeCard.innerHTML='<div class="chart-title">🏆 Dine prestasjoner</div><div class="badge-row"><div class="badge-item earned-gold"><div class="badge-emoji">⭐</div><div class="badge-label">7 dager fri</div></div><div class="badge-item earned-green"><div class="badge-emoji">✅</div><div class="badge-label">Første logg</div></div><div class="badge-item earned-blue"><div class="badge-emoji">🛡️</div><div class="badge-label">Kriseplan</div></div><div class="badge-item locked"><div class="badge-emoji">🔒</div><div class="badge-label">30 dager fri</div></div></div>'; s.appendChild(badgeCard);
-  await reveal(badgeCard);
-  await delay(3000); if(!skipFlag) scene7();
+// SCENE 8: Kriseplan
+function scene7(){
+  clr();setDots(7);setHeader('Kriseplan','Din strukturerte plan');setNav(3);
+  const s=document.getElementById('screen');
+  s.innerHTML='<div class="scene-title">🛡️ MIN KRISEPLAN</div>'
+  +[['📞 Hvem ringer jeg?',['Morten: +47 911 22 333','Helsehjelp: 08588']],['✅ Hva gjør jeg?',['Går en tur utenfor','Ringer Morten','Åpner dagboken i appen']],['🚫 Hva unngår jeg?',['Fester uten plan','Å være alene fredag','Alkohol som start']]].map(([t,items])=>'<div class="crisis-section"><div class="crisis-section-title">'+t+'</div>'+items.map(it=>'<div class="crisis-item" onclick="this.classList.toggle('checked')">'+it+'</div>').join('')+'</div>').join('')
+  +'<div class="saved-status" id="savedStatus" style="display:block">✅ Kriseplan er lagret og klar</div>';
 }
 
-// SCENE 7 – Motivasjonsvegg + Ukens mål
-async function scene7() {
-  skipFlag=false; currentScene=6; setDots(6); clr();
-  setHeader('Motivasjon','Ukens mål');
-  const s = document.getElementById('screen');
-  const title = mk('div','scene-title artifact','💪 MIN MOTIVASJONSVEGG'); s.appendChild(title);
-  await delay(300); await reveal(title);
-  const motivs=[{e:'👨‍👧',t:'Familie',s:'For barna mine'},{e:'❤️',t:'Helse',s:'Leve lenger og bedre'},{e:'💰',t:'Økonomi',s:'Spare til leilighet'}];
-  for(const m of motivs){
-    const c=mk('div','motiv-card artifact'); c.innerHTML='<div class="motiv-emoji">'+m.e+'</div><div><div class="motiv-title">'+m.t+'</div><div class="motiv-sub">'+m.s+'</div></div>'; s.appendChild(c);
-    await delay(350); await reveal(c);
-  }
-  await delay(600);
-  const goal = mk('div','card artifact'); goal.innerHTML='<div class="card-label">🎯 Ukens mål</div><div style="font-size:15px;font-weight:600;color:#2C5F8A;margin:6px 0">Ikke bruke fredag/lørdag</div><div class="goal-progress-bar"><div class="goal-fill" id="goalFill"></div></div><div style="font-size:12px;color:#6b7280;margin-top:6px">4 av 5 dager fullført (80%)</div><div class="stars" id="stars"></div>'; s.appendChild(goal);
-  await delay(400); await reveal(goal);
-  await delay(300);
-  const gf=document.getElementById('goalFill'); if(gf) gf.style.width='80%';
-  await delay(600);
-  const starsEl=document.getElementById('stars'); if(starsEl) starsEl.textContent='⭐⭐⭐⭐☆';
-  await delay(2800); if(!skipFlag) scene8();
-}
-
-// SCENE 8 – Kriseplan
-async function scene8() {
-  skipFlag=false; currentScene=7; setDots(7); clr();
-  setHeader('Kriseplan','Din strukturerte plan');
-  const s = document.getElementById('screen');
-  const title = mk('div','scene-title artifact','🛡️ MIN KRISEPLAN'); s.appendChild(title);
-  await delay(300); await reveal(title);
-  const sections=[
-    {t:'📞 Hvem ringer jeg?',items:['Morten: +47 911 22 333','Helsehjelp: 08588']},
-    {t:'✅ Hva gjør jeg?',items:['Går en tur utenfor','Ringer Morten','Åpner dagboken i appen']},
-    {t:'🚫 Hva unngår jeg?',items:['Fester uten plan','Å være alene fredag','Alkohol som start']},
-  ];
-  for(const sec of sections){
-    const c=mk('div','crisis-section artifact'); let html='<div class="crisis-section-title">'+sec.t+'</div>'; for(const it of sec.items) html+='<div class="crisis-item"><span>'+it+'</span></div>'; c.innerHTML=html; s.appendChild(c);
-    await delay(500); await reveal(c);
-  }
-  await delay(800);
-  const saved=mk('div','saved-status artifact'); saved.innerHTML='✅ Kriseplan er lagret og klar'; s.appendChild(saved);
-  await reveal(saved);
-  await delay(3200); if(!skipFlag) scene1();
-}
-
-function skip() { skipFlag=true; const n=(currentScene+1)%TOTAL; setTimeout(()=>{ skipFlag=false; [scene1,scene2,scene3,scene4,scene5,scene6,scene7,scene8][n](); },200); }
-function restart() { skipFlag=true; setTimeout(()=>{ skipFlag=false; currentScene=0; scene1(); },200); }
-scene1();
-</script>
+const scenes=[scene0,scene1,scene2,scene3,scene4,scene5,scene6,scene7];
+goScene(0);
+<\/script>
 </body>
 </html>
